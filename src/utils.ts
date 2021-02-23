@@ -2,11 +2,17 @@
 
 import * as R from 'ramda'
 import * as d3 from 'd3'
+
 import {
   DifferentialExpression,
   PairwiseComparison,
-  ProjectTreatment
+  ProjectTreatment,
+  Project
 } from './ts_types'
+
+import {
+  DredgeState
+} from './reducer'
 
 
 // FIXME: Generally, should rename `transcripts` to `difExs`, or something
@@ -149,9 +155,20 @@ export function getPlotBins(
   return R.flatten(bins)
 }
 
-// FIXME: Implement type
-export function projectForView(state: any) {
-  return state.projects[state.view.source.key]
+export function projectForView(state: DredgeState) {
+  const err = new Error('No project for view')
+
+  if (state.view === null) {
+    throw err
+  }
+
+  const project = state.projects[state.view.source.key]
+
+  if (project === null) {
+    throw err;
+  }
+
+  return project
 }
 
 export function getDefaultGrid(treatments: Array<ProjectTreatment>) {
